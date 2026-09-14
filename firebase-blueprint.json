@@ -1,0 +1,313 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Student profile, study preferences, and coaching pass status",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique user identifier matching auth UID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Student full name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Student email address"
+        },
+        "preferredLanguage": {
+          "type": "string",
+          "description": "Preferred study language (e.g. HINDI, ENGLISH)"
+        },
+        "targetExam": {
+          "type": "string",
+          "description": "Target exam goal (e.g. NEET UG, JEE Main)"
+        },
+        "classLevel": {
+          "type": "string",
+          "description": "Student class level (e.g. Class 11, Class 12, Dropper)"
+        },
+        "targetYear": {
+          "type": "string",
+          "description": "Target examination year"
+        },
+        "isInstitutePassActive": {
+          "type": "boolean",
+          "description": "Whether premium Institute Pass is active"
+        },
+        "streakDays": {
+          "type": "integer",
+          "description": "Consecutive days study streak count"
+        },
+        "totalStudyMinutes": {
+          "type": "integer",
+          "description": "Total study minutes logged"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of last profile update"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "preferredLanguage",
+        "targetExam",
+        "isInstitutePassActive",
+        "streakDays"
+      ]
+    },
+    "MistakeItem": {
+      "title": "MistakeItem",
+      "description": "Student question error logged in the Mistake Notebook",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique mistake record ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner student UID"
+        },
+        "programId": {
+          "type": "string",
+          "description": "Program ID (e.g. neet_ug)"
+        },
+        "subjectId": {
+          "type": "string",
+          "description": "Subject ID (e.g. physics)"
+        },
+        "chapterTitle": {
+          "type": "string",
+          "description": "Chapter title"
+        },
+        "questionText": {
+          "type": "string",
+          "description": "The question text"
+        },
+        "studentAnswer": {
+          "type": "string",
+          "description": "Answer provided by the student"
+        },
+        "correctAnswer": {
+          "type": "string",
+          "description": "The correct answer key"
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Step-by-step conceptual explanation"
+        },
+        "mistakeTypeName": {
+          "type": "string",
+          "description": "Classification of error (Calculation, Conceptual, Memory Trap)"
+        },
+        "isResolved": {
+          "type": "boolean",
+          "description": "Whether student resolved this error in re-testing"
+        },
+        "studentNotes": {
+          "type": "string",
+          "description": "Personal annotations by student"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Epoch timestamp in milliseconds"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "questionText",
+        "correctAnswer",
+        "mistakeTypeName",
+        "isResolved"
+      ]
+    },
+    "TestRecord": {
+      "title": "TestRecord",
+      "description": "Completed mock test score and percentile record",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique test attempt ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner student UID"
+        },
+        "testId": {
+          "type": "string",
+          "description": "Catalog test identifier"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the test"
+        },
+        "score": {
+          "type": "integer",
+          "description": "Marks scored by student"
+        },
+        "totalMarks": {
+          "type": "integer",
+          "description": "Maximum marks for test"
+        },
+        "accuracy": {
+          "type": "integer",
+          "description": "Accuracy percentage (0-100)"
+        },
+        "timeSpentSeconds": {
+          "type": "integer",
+          "description": "Duration spent on test in seconds"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Epoch timestamp in milliseconds"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "testId",
+        "title",
+        "score",
+        "totalMarks",
+        "accuracy"
+      ]
+    },
+    "UtrPayment": {
+      "title": "UtrPayment",
+      "description": "UPI 12-digit UTR payment submission record for Institute Pass",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique transaction record ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner student UID"
+        },
+        "userName": {
+          "type": "string",
+          "description": "Name of student who paid"
+        },
+        "utrNumber": {
+          "type": "string",
+          "description": "12-digit bank UPI transaction reference"
+        },
+        "planId": {
+          "type": "string",
+          "description": "Selected subscription plan ID"
+        },
+        "planName": {
+          "type": "string",
+          "description": "Display name of the plan"
+        },
+        "amountInr": {
+          "type": "integer",
+          "description": "Amount paid in INR"
+        },
+        "upiIdUsed": {
+          "type": "string",
+          "description": "Merchant UPI VPA used (e.g. 7339956247@ptyes)"
+        },
+        "status": {
+          "type": "string",
+          "description": "Payment verification status"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Epoch timestamp in milliseconds"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "utrNumber",
+        "planId",
+        "amountInr",
+        "status"
+      ]
+    },
+    "CourseCatalogItem": {
+      "title": "CourseCatalogItem",
+      "description": "Public curriculum batches and courses available on the platform",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique course ID"
+        },
+        "title": {
+          "type": "string",
+          "description": "Course title"
+        },
+        "examCategory": {
+          "type": "string",
+          "description": "Target exam category (NEET, JEE, Foundation)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed course curriculum description"
+        },
+        "instructorName": {
+          "type": "string",
+          "description": "Lead AI faculty or instructors"
+        },
+        "totalLectures": {
+          "type": "integer",
+          "description": "Total masterclass lectures count"
+        },
+        "totalDurationHours": {
+          "type": "integer",
+          "description": "Total content duration in hours"
+        },
+        "rating": {
+          "type": "number",
+          "description": "Average student rating out of 5"
+        },
+        "isProOnly": {
+          "type": "boolean",
+          "description": "Whether course requires Institute Pass"
+        },
+        "badge": {
+          "type": "string",
+          "description": "Display badge (e.g. Top Rated, Bestseller)"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "examCategory",
+        "description"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual student profile and learning preferences"
+    },
+    "/users/{userId}/mistakes/{mistakeId}": {
+      "schema": "MistakeItem",
+      "description": "Student individual mistake notebook items"
+    },
+    "/users/{userId}/test_records/{testRecordId}": {
+      "schema": "TestRecord",
+      "description": "Student mock test attempt records"
+    },
+    "/users/{userId}/payments/{paymentId}": {
+      "schema": "UtrPayment",
+      "description": "Student UPI fee payment submissions"
+    },
+    "/courses/{courseId}": {
+      "schema": "CourseCatalogItem",
+      "description": "Global catalog of courses and curriculum batches"
+    }
+  }
+}

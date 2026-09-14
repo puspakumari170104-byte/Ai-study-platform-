@@ -1,0 +1,6 @@
+{
+  "name": "Study With AI",
+  "description": "AI-powered education and coaching platform with interactive classrooms, practice engine, test mastery, and GitHub APK download workflow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

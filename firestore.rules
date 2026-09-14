@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidUserProfile(data) {
+      return data.id is string &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.preferredLanguage is string &&
+             data.targetExam is string &&
+             data.isInstitutePassActive is bool &&
+             data.streakDays is int && data.streakDays >= 0 &&
+             (!('email' in data) || data.email is string) &&
+             (!('classLevel' in data) || data.classLevel is string) &&
+             (!('targetYear' in data) || data.targetYear is string) &&
+             (!('totalStudyMinutes' in data) || data.totalStudyMinutes is int);
+    }
+
+    function isValidMistake(data, userId) {
+      return data.id is string &&
+             data.userId == userId &&
+             data.questionText is string && data.questionText.size() > 0 &&
+             data.correctAnswer is string &&
+             data.mistakeTypeName is string &&
+             data.isResolved is bool &&
+             (!('studentAnswer' in data) || data.studentAnswer is string) &&
+             (!('explanation' in data) || data.explanation is string) &&
+             (!('studentNotes' in data) || data.studentNotes is string) &&
+             (!('programId' in data) || data.programId is string) &&
+             (!('subjectId' in data) || data.subjectId is string) &&
+             (!('chapterTitle' in data) || data.chapterTitle is string) &&
+             (!('timestamp' in data) || data.timestamp is int);
+    }
+
+    function isValidTestRecord(data, userId) {
+      return data.id is string &&
+             data.userId == userId &&
+             data.testId is string &&
+             data.title is string &&
+             data.score is int &&
+             data.totalMarks is int && data.totalMarks > 0 &&
+             data.accuracy is int && data.accuracy >= 0 && data.accuracy <= 100 &&
+             (!('timeSpentSeconds' in data) || data.timeSpentSeconds is int) &&
+             (!('timestamp' in data) || data.timestamp is int);
+    }
+
+    function isValidPayment(data, userId) {
+      return data.id is string &&
+             data.userId == userId &&
+             data.utrNumber is string && data.utrNumber.size() >= 8 && data.utrNumber.size() <= 20 &&
+             data.planId is string &&
+             data.amountInr is int && data.amountInr >= 0 &&
+             data.status is string &&
+             (!('userName' in data) || data.userName is string) &&
+             (!('planName' in data) || data.planName is string) &&
+             (!('upiIdUsed' in data) || data.upiIdUsed is string) &&
+             (!('timestamp' in data) || data.timestamp is int);
+    }
+
+    // User Profile
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(request.resource.data) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && isValidUserProfile(request.resource.data) && request.resource.data.id == userId;
+      allow delete: if isOwner(userId);
+
+      // Student Mistake Notebook
+      match /mistakes/{mistakeId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidMistake(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidMistake(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+
+      // Student Test Attempt Records
+      match /test_records/{testRecordId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidTestRecord(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidTestRecord(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+
+      // Student UTR Fee Payment Submissions
+      match /payments/{paymentId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidPayment(request.resource.data, userId);
+        allow update: if isOwner(userId) && isValidPayment(request.resource.data, userId);
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Public Course Catalog (Read by any user, write restricted to admin)
+    match /courses/{courseId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+  }
+}
