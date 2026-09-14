@@ -27,17 +27,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK & Accept Licenses
-        uses: android-actions/setup-android@v3
-
-      - name: Configure Android SDK Platform 36 & Licenses
-        run: |
-          # Accept all Android licenses
-          yes | sdkmanager --licenses || true
-          
-          # Install platform 36 and build tools
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools" || true
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -45,13 +34,18 @@ jobs:
 
       - name: Prepare Keystore and Environment Files
         run: |
-          # Create empty .env and local.properties if not present
+          # Create empty .env and local.properties
           touch .env
-          touch local.properties
+          echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
 
-          # Generate debug.keystore for signingConfig
+          # Accept Android licenses if sdkmanager exists
+          if [ -d "/usr/local/lib/android/sdk/cmdline-tools/latest/bin" ]; then
+            yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          fi
+
+          # Generate debug.keystore if missing so debugConfig signs properly
           if [ ! -f debug.keystore ]; then
-            keytool -genkeypair -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+            keytool -genkeypair -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US" -storetype JKS
           fi
           mkdir -p ~/.android
           cp -f debug.keystore ~/.android/debug.keystore || true
@@ -60,7 +54,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK with Gradle
-        run: ./gradlew assembleDebug --no-daemon --no-configuration-cache --stacktrace
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Prepare Named APK File
         run: |

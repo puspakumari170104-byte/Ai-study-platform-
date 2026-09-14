@@ -9,23 +9,41 @@
 
 ---
 
-## 📱 How to Download & Install Directly on Android Phone
+## 📱 How to Download the Installable APK to Your Phone
 
-Whenever you push code or trigger the build on GitHub, GitHub Actions automatically compiles the Android APK and makes it immediately downloadable.
+### 🌐 Method 1: Export to GitHub (Direct Standalone APK to Your Phone)
+Because AI Studio is a web development environment, its **Export** menu provides source code (`.zip`) and **Push to GitHub**. When you push to GitHub, our pre-configured CI/CD workflow builds the standalone APK automatically:
+1. In AI Studio, tap **Export** in the top right > **Push to GitHub**.
+2. Open your GitHub repository in your phone's browser.
+3. Tap **Releases** (or go to **Actions** > latest run).
+4. Under **Assets**, tap **`StudyWithAI-v1.0.apk`** to download it directly onto your phone without extracting any zip files.
+5. Tap to install!
 
-### 🌟 2 Easy Ways to Download the Single APK (No ZIP needed!):
+---
 
-#### Option 1: Direct Download from GitHub Releases (Recommended)
-1. On your **Android phone**, open your GitHub repository in your browser (e.g., Chrome).
-2. Tap on **Releases** (or navigate directly to the Releases page).
-3. Under the latest release (**`Study With AI`**), look at **Assets**.
-4. Tap **`StudyWithAI-v1.0.apk`** to download the single APK directly onto your phone without extracting any zip file.
+### 💻 Method 2: Offline Build via Android Studio (No GitHub Needed)
+If you do not want to use GitHub:
+1. In AI Studio, tap **Export** > **Download as .zip file**.
+2. Unzip the file on your PC or laptop.
+3. Open the folder in **Android Studio**.
+4. Click **Build** > **Build Bundle(s) / APK(s)** > **Build APK(s)**.
+5. Send the compiled `app-debug.apk` to your phone via USB cable, Google Drive, or messaging apps.
 
-#### Option 2: Download from GitHub Actions
-1. Go to the **Actions** tab in your GitHub repository.
-2. Tap the latest workflow run (**Build & Release Android APK**).
-3. Scroll down to the **Artifacts** section at the bottom.
-4. Tap **`StudyWithAI-v1.0-APK`** to download.
+---
+
+### ⚡ Method 3: Instant Interactive Preview in AI Studio (Immediate Testing)
+You can use the full application right now without downloading anything:
+- Tap the **Preview** tab next to **Code** in AI Studio to use the live interactive streaming Android emulator in your browser.
+
+---
+
+### 🚀 Google Play Store Publishing (Ready to Publish)
+The app is fully configured to comply with Google Play Developer policies:
+- **Target SDK**: Android 16 (API Level 36) — compliant with 2026 Google Play requirements.
+- **Min SDK**: Android 7.0 (API Level 24) — compatible with over 95% of active devices.
+- **Play Store Bundle (AAB)**: Run `./gradlew bundleRelease` in Android Studio or GitHub Actions.
+- **Permissions**: Zero sensitive storage permissions, completely compliant with privacy standards.
+- **Monetization & Ads**: Google Mobile Ads (AdMob) integrated with rewarded video ads and interstitial ads.
 
 ---
 
