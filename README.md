@@ -9,37 +9,35 @@
 
 ---
 
-## 📱 Instant Installation on Android Phone via GitHub Push
+## 📱 How to Download & Install Directly on Android Phone
 
-Whenever you push this project to GitHub (or click **Push to GitHub** in Google AI Studio), GitHub Actions automatically compiles the Android APK and publishes a ready-to-install release.
+Whenever you push code or trigger the build on GitHub, GitHub Actions automatically compiles the Android APK and makes it immediately downloadable.
 
-### 🌟 How to Install Directly on Your Android Phone:
+### 🌟 2 Easy Ways to Download the Single APK (No ZIP needed!):
 
-#### Step 1: Push to GitHub
-- In Google AI Studio, click **Settings** / **Export** -> **Push to GitHub** (or run `git push origin main` from your terminal).
-- The automated CI/CD pipeline (`.github/workflows/build-apk.yml`) triggers immediately.
+#### Option 1: Direct Download from GitHub Releases (Recommended)
+1. On your **Android phone**, open your GitHub repository in your browser (e.g., Chrome).
+2. Tap on **Releases** (or navigate directly to the Releases page).
+3. Under the latest release (**`Study With AI`**), look at **Assets**.
+4. Tap **`StudyWithAI-v1.0.apk`** to download the single APK directly onto your phone without extracting any zip file.
 
-#### Step 2: Download the APK from GitHub Releases
-1. On your **Android phone**, open your GitHub repository in your browser (e.g. Chrome).
-2. Scroll to the **Releases** section on the right side (or navigate to `https://github.com/YOUR_USERNAME/Study-With-AI/releases`).
-3. Under the latest release (**`v1.0.0-latest`**), expand **Assets**.
-4. Tap **`app-debug.apk`** to download the APK directly onto your phone.
-
-#### Step 3: Install the APK on Your Phone
-1. When download completes, tap the notification or open the file from your **Downloads** folder.
-2. If Android displays: *"For your security, your phone is not allowed to install unknown apps from this source"*:
-   - Tap **Settings** in the popup.
-   - Toggle on **"Allow from this source"** for your browser or file manager.
-   - Tap the back button and tap **Install**.
-3. Tap **Open** and enjoy **Study With AI**!
+#### Option 2: Download from GitHub Actions
+1. Go to the **Actions** tab in your GitHub repository.
+2. Tap the latest workflow run (**Build & Release Android APK**).
+3. Scroll down to the **Artifacts** section at the bottom.
+4. Tap **`StudyWithAI-v1.0-APK`** to download.
 
 ---
 
-### ⚡ Alternative: Download from GitHub Actions Run Artifacts
-1. Go to the **Actions** tab in your GitHub repository.
-2. Tap the topmost workflow run (**Build & Release Android APK**).
-3. Scroll down to the **Artifacts** section at the bottom.
-4. Tap **`StudyWithAI-Android-APK`** to download.
+### 🚀 3-Step Phone Installation Guide:
+1. **Download**: Tap **`StudyWithAI-v1.0.apk`** to download the file.
+2. **Open**: Once the download completes, tap the file in your phone's notification shade or in your phone's **Downloads** folder.
+3. **Install**: Tap **Install**. If Android prompts with:
+   *"For your security, your phone is not allowed to install unknown apps from this source"*:
+   - Tap **Settings** in the dialog.
+   - Turn ON **"Allow from this source"** for your browser or file manager.
+   - Return to the previous screen and tap **Install**.
+4. Tap **Open** and enjoy **Study With AI**!
 
 ---
 

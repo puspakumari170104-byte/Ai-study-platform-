@@ -22,46 +22,63 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Set up Android SDK & Accept Licenses
+        uses: android-actions/setup-android@v3
+
+      - name: Configure Android SDK Platform 36 & Licenses
+        run: |
+          # Accept all Android licenses
+          yes | sdkmanager --licenses || true
+          
+          # Install platform 36 and build tools
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools" || true
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           cache-read-only: false
 
-      - name: Ensure Environment Configuration, Android SDK Platform & Keystore
+      - name: Prepare Keystore and Environment Files
         run: |
-          # Ensure .env file exists for Secrets Gradle plugin
+          # Create empty .env and local.properties if not present
           touch .env
-          
-          # Auto-accept licenses and install compileSdk 36 platform & build tools
-          yes | sdkmanager --licenses || true
-          echo "y" | sdkmanager "platforms;android-36" "platform-tools" "build-tools;36.0.0" || true
+          touch local.properties
 
-          # Ensure debug.keystore exists
+          # Generate debug.keystore for signingConfig
           if [ ! -f debug.keystore ]; then
-            keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+            keytool -genkeypair -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
           fi
+          mkdir -p ~/.android
+          cp -f debug.keystore ~/.android/debug.keystore || true
 
       - name: Grant Execute Permission to Gradle Wrapper
         run: chmod +x gradlew
 
       - name: Build Debug APK with Gradle
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug --no-daemon --no-configuration-cache --stacktrace
+
+      - name: Prepare Named APK File
+        run: |
+          mkdir -p release-apks
+          cp app/build/outputs/apk/debug/app-debug.apk release-apks/StudyWithAI-v1.0.apk
+          cp app/build/outputs/apk/debug/app-debug.apk release-apks/app-debug.apk
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: StudyWithAI-Android-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: StudyWithAI-v1.0-APK
+          path: release-apks/StudyWithAI-v1.0.apk
           if-no-files-found: error
           retention-days: 30
 
       - name: Create or Update GitHub Release with Single APK
         uses: softprops/action-gh-release@v2
+        continue-on-error: true
         with:
           tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'v1.0.0-latest' }}
           name: ${{ startsWith(github.ref, 'refs/tags/') && format('Study With AI {0}', github.ref_name) || 'Study With AI - Latest Android APK' }}
@@ -73,10 +90,10 @@ jobs:
 
             Download the installable APK file directly to your Android phone without needing to extract any zip files:
 
-            - 📥 **Single APK Download Link**: Tap **`app-debug.apk`** under the **Assets** section below.
+            - 📥 **Single APK Download Link**: Tap **`StudyWithAI-v1.0.apk`** or **`app-debug.apk`** under the **Assets** section below.
             
             ### 🚀 Quick 3-Step Phone Installation:
-            1. **Download**: Tap **`app-debug.apk`** below to start downloading.
+            1. **Download**: Tap **`StudyWithAI-v1.0.apk`** below to start downloading.
             2. **Open**: Once the download completes, tap the file in your notification bar or **Downloads** folder.
             3. **Install**: Tap **Install**. If Android prompts with *"For your security, your phone is not allowed to install unknown apps from this source"*, tap **Settings** and turn on **"Allow from this source"**, then complete installation.
             
@@ -86,6 +103,17 @@ jobs:
             - 📝 **Live Digital Smart Board**: Real-time chalk formula rendering and step-by-step notes.
             - 🎯 **Daily Practice (DPP) & Mastery**: Concept questions with instant voice derivations.
             - 📓 **Mistake Notebook**: Intelligent error classification and revision.
-          files: app/build/outputs/apk/debug/app-debug.apk
+          files: |
+            release-apks/StudyWithAI-v1.0.apk
+            release-apks/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add Job Summary with Download Guidance
+        run: |
+          echo "## 🎉 Android APK Successfully Built!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 How to Download to Your Phone:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Scroll down to **Artifacts** at the bottom of this summary page." >> $GITHUB_STEP_SUMMARY
+          echo "2. Download **StudyWithAI-v1.0-APK**, OR go to the [Releases](https://github.com/${{ github.repository }}/releases) tab for direct 1-tap single APK download." >> $GITHUB_STEP_SUMMARY
+          echo "3. Tap the downloaded file on your Android phone to install." >> $GITHUB_STEP_SUMMARY
